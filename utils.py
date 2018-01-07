@@ -297,3 +297,27 @@ def get_CSQ():
     except Exception as e:
         USB0.send('FATAL ERROR: utils.get_CSQ(): {}\r\n'.format(e))
         
+def set_PORTCFG(val1):
+    try:
+        MDM.send('AT#PORTCFG={}\r'.format(val1), 0)
+        s = MDM_receive(5) 
+        if s.find('OK') != -1:
+            return (1, s)
+        else:
+            return (-1, s)
+    except Exception as e:
+        USB0.send('FATAL ERROR: utils.set_PORTCFG(): {}\r\n'.format(e))
+        
+def set_STARTMODESCR(val1, val2):
+    try:
+        MDM.send('AT#STARTMODESCR={},{}\r'.format(val1, val1), 0)
+        s = MDM_receive(5) 
+        if s.find('OK') != -1:
+            return (1, s)
+        else:
+            return (-1, s)
+    except Exception as e:
+        USB0.send('FATAL ERROR: utils.set_STARTMODESCR(): {}\r\n'.format(e))
+        
+        
+        
