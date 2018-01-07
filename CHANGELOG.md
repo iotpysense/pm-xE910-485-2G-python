@@ -1,4 +1,16 @@
 <h1>Changelog<h1>
+
+<h3>0.0.2 - 2018-01-07<h3>
+<h5>Added</h5>
+<list>
+<li>AT++METTEST command</li>
+<li>Sets STARTMODESCR and PORTCFG during modem init</li>
+<list>
+<h5>Issues</h5>
+<list>
+<li>SW crashes when connecting modem to USB interface</li>
+<list>
+  
 <h3>0.0.1 - 2018-01-06<h3>
 <h5>Added</h5>
 <list>
