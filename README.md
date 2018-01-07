@@ -3,6 +3,8 @@ Python SW for pm-xE910-485-2G-0x modems
 
 # AT++ Commands:
 
+SW implements custom AT++ commands available at USB0 interface:
+
 - <strong>AT++</strong>
 Returns OK if AT++ interpreter runs
 - <strong>AT++CONFIG?</strong>
@@ -10,7 +12,7 @@ Returns modem configuration
 - <strong>AT++METACH=x,y</strong>
 Changes meter modbus address at 'x' address for 'y' address. For example AT++METACH=1,5 changes meter with address 1 for address 5
 - <strong>AT++METTR=x[,y...]</strong>
-Sets meters address for readings. For example AT++METER=1,2,3,4,5 will set up readings from 1,2,3,4,5 modbus addresses
+Sets meters address for readings. For example AT++METTR=1,2,3,4,5 will set up readings from 1,2,3,4,5 modbus addresses
 - <strong>AT++READTM=x</strong>
 Rets reading timeout. For example AT++READTM=300 will set up readings period for 300s (15min)
 - <strong>AT++MQTT=CONNECT</strong>
