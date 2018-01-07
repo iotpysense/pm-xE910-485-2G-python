@@ -39,7 +39,7 @@ CONF_READ_TIMEOUT = int(CONFIG.get('READ_TIMEOUT'))
 CONF_WATCHDOG_TIMEOUT = int(CONFIG.get('WATCHDOG_TIMEOUT'))
 CONF_WATCHDOG_RESET = int(CONFIG.get('WATCHDOG_RESET'))
 
-SW_VER = '0.6'
+SW_VER = '0.0.2'
 
 __STM = stm32.STM32(usb_log=True)
 __FIF = fif.FIF(__STM, usb_log=True)
@@ -64,7 +64,29 @@ def modem_init():
 
     utils.CRLF()
     USB0.send('\r\n2017 (c) PySENSE RS485 SW VER: {}\r\n'.format(SW_VER))
-
+    
+    try:
+        s = utils.set_PORTCFG(4)
+        if s[0]:
+            USB0.send('Setting #PORTCFG...OK\r\n')
+        else:
+            USB0.send('Setting #PORTCFG...ERROR\r\n')
+    except Exception as e:
+        if LOG_TO_USB0:
+            USB0.send('FATAL ERROR main.modem_init() -> set_PORTCFG(): {}...ERROR\r\n'.format(e))
+            log('FATAL ERROR main.modem_init() -> set_PORTCFG(): {}...ERROR\r\n'.format(e))
+            
+    try:
+        s = utils.set_STARTMODESCR(1,30)
+        if s[0]:
+            USB0.send('Setting #STARTMODESCR...OK\r\n')
+        else:
+            USB0.send('Setting #STARTMODESCR...ERROR\r\n')
+    except Exception as e:
+        if LOG_TO_USB0:
+            USB0.send('FATAL ERROR main.modem_init() -> set_STARTMODESCR(): {}...ERROR\r\n'.format(e))
+            log('FATAL ERROR main.modem_init() -> set_STARTMODESCR(): {}...ERROR\r\n'.format(e))
+    
     try:
         s = utils.set_APN(CONF_APN)
         if s[0]:
@@ -220,6 +242,27 @@ def main_loop():
                         start_wdg = time.time()
                         continue
                     
+                    if (in_.find('AT++METTEST=') != -1):
+                        # command tests the meter read out
+                        
+                        x = in_.find('=')
+                        y = in_.find('\r')
+                        addr = int(in_[x+1:y])
+                        
+                        res = __FIF.read_LE_0xM(int(addr))
+                    
+                        if res[0] != 0:
+                            USB0.send('Meter with {} address read out correctly\r\n'.format(res))
+                        else:
+                            USB0.send('Meter with {} address is not responding\r\n'.format(res))
+                        
+                        USB0.send('++METTEST OK\r\n')
+                        in_ = ''
+                        start_read = time.time()
+                        __STM.reset_wdg()
+                        start_wdg = time.time()
+                        continue
+                    
                     if (in_.find('AT++READTM=') != -1):
                         # command sets meters to read out
                         
@@ -326,11 +369,5 @@ if __name__ == '__main__':
     
     modem_init()
     main_loop()
-
-
-        
-
-        
-        
-        
-        
+    
+    
