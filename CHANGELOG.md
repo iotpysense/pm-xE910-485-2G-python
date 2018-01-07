@@ -15,5 +15,5 @@
 <lsit>
 <h5>Issues</h5>
 <list>
-<li>SW crashes connecting a USB c</li>
+<li>SW crashes when connecting modem to USB interface</li>
 <lsit>
