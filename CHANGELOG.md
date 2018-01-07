@@ -9,6 +9,7 @@
 <h5>Issues</h5>
 <list>
 <li>SW crashes when connecting modem to USB interface</li>
+<li>STM32 communication. Retries needed because commands don't always work correctly - sometimes LED are not setting up</li>
 <list>
   
 <h3>0.0.1 - 2018-01-06<h3>
