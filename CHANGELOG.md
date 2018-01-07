@@ -12,8 +12,8 @@
 <li>Basic AT++ command support</li>
 <li>Basic configuration</li>
 <li>Basic event log</li>
-<lsit>
+<list>
 <h5>Issues</h5>
 <list>
 <li>SW crashes when connecting modem to USB interface</li>
-<lsit>
+<list>
