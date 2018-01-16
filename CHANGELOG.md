@@ -4,7 +4,6 @@
 <h5>Added</h5>
 <list>
 <li>AT++METERF command</li>
-<li></li>
 <list>
 <h5>Issues</h5>
 <list>
