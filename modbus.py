@@ -1,5 +1,4 @@
 import USB0
-import time
 
 from binascii import hexlify
 from binascii import unhexlify

@@ -8,12 +8,13 @@ class Config:
 
         self.__defConf = {
             'APN':'NXT17.NET',
-            'MQTT_ENDPOINT':'api-de.devicewise.com',
-            'MQTT_TOKEN':'0g9ZO5h0T4OXOsQ2',
+            'MQTT_ENDPOINT':'API_ENDOPOINT', # insert API Endpoint
+            'MQTT_TOKEN':'API_TOKEN', # insert App Token
             'METER_TO_READ':'1,2,3,4,5',
             'READ_TIMEOUT': '3600',
             'WATCHDOG_TIMEOUT':'900',
-            'WATCHDOG_RESET':'300'
+            'WATCHDOG_RESET':'300',
+            'METERF':'1,1,1,1,1'
         }
 
     def get(self, k):
@@ -33,7 +34,7 @@ class Config:
             finally:
                 fh.close()
         except IOError:
-            if self.__usb_log: USB0.send('FATAL ERROR: Configuration file not found: {}\r\n'.format(e))
+            if self.__usb_log: USB0.send('FATAL ERROR: Configuration file not found\r\n')
             fh = open('config.ini','w')
             try:
                 lines = []
@@ -62,9 +63,8 @@ class Config:
             finally:
                 fh.close()
         except IOError:
-            if self.__usb_log: USB0.send('FATAL ERROR: Configuration file not found: {}\r\n'.format(e))
+            if self.__usb_log: USB0.send('FATAL ERROR: Configuration file not found\r\n')
 
     def dump(self):
         for k in self.config.keys():
             USB0.send(('{}::{}\r\n'.format(k, self.config[k])))
-                      

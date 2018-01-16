@@ -1,8 +1,6 @@
 import USB0
 
 import time
-from binascii import unhexlify
-from binascii import hexlify
 
 import stm32
 
@@ -22,7 +20,7 @@ class FIF():
         except Exception as e:
             if self.__usb_log: USB0.send('FATAL ERROR __init__(): {}\r\n'.format(e))
         
-    def read_LE_0xM(self, addr):
+    def read_LE_0xM(self, addr, meterf):
         '''Function reads LE-0xM meter returning energy consumption in float kWh
         
         :param addr (int): meter address
@@ -62,7 +60,7 @@ class FIF():
                 res_crc = int(res1[18:22], 16)
             
                 return (1, res[2], res_saddr, res_func, res_bytec, \
-                    res_r0, res_r1, res_r2, res_crc, self.__alg(res_r0, res_r1, res_r2))
+                    res_r0, res_r1, res_r2, res_crc, self.__alg(res_r0, res_r1, res_r2, meterf))
            
             else: 
                 return (0,)
@@ -100,14 +98,19 @@ class FIF():
             if self.__usb_log: USB0.send('FATAL ERROR change_addr_LE_0xM(): {}\r\n'.format(e))
             
             
-    def __alg(self, r0, r1, r2):
+    def __alg(self, r0, r1, r2, meterf):
         # calculates current consumption form 3 (int) registers
         r0 = float(r0)
         r1 = float(r1)
         r2 = float(r2)
-        return float((r0*(256**2)+(r1*256)+r2)/10)
-
+        res = 0.0
+        if meterf == 1:
+            res = float(((r0*(256**2)+(r1*256)+r2))/100)
+        elif meterf == 3:
+            res = float(((r0*(256**2)+(r1*256)+r2))/10)
+        return res
             
+
     def test(self, tries=10):
         # test function
         try:

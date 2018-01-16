@@ -24,7 +24,7 @@ class LOGWriter():
     def write(self, s):
         log(s+'r')
         
-sys.stdout = sys.stderr = LOGWriter()
+sys.stdout = sys.stderr = USBWriter()
 
 log('Program Started')
 
@@ -38,12 +38,12 @@ CONF_METER_TO_READ = CONFIG.get('METER_TO_READ').split(',')
 CONF_READ_TIMEOUT = int(CONFIG.get('READ_TIMEOUT'))
 CONF_WATCHDOG_TIMEOUT = int(CONFIG.get('WATCHDOG_TIMEOUT'))
 CONF_WATCHDOG_RESET = int(CONFIG.get('WATCHDOG_RESET'))
+CONF_METERF = CONFIG.get('METERF').split(',')
 
-SW_VER = '0.0.2'
+SW_VER = '0.0.3'
 
 __STM = stm32.STM32(usb_log=True)
 __FIF = fif.FIF(__STM, usb_log=True)
-
 
 def modem_init():
 
@@ -128,7 +128,6 @@ def modem_init():
     
 def main_loop():
     in_ = ''
-    out_ = ''
 
     loop_flag = True
     
@@ -137,6 +136,7 @@ def main_loop():
     global CONF_READ_TIMEOUT
     global CONF_METER_TO_READ
     global CONF_WATCHDOG_RESET
+    global CONF_METERF
     
     start_read = time.time()
     start_wdg = time.time()
@@ -157,7 +157,7 @@ def main_loop():
                 time.sleep(15)
                 
                 for m in CONF_METER_TO_READ:
-                    res = __FIF.read_LE_0xM(int(m))
+                    res = __FIF.read_LE_0xM(int(m), int(CONF_METERF[int(m)-1])) # CONF_METERF indicates phase number
                     
                     if res[0] != 0:
                         utils.mqtt_send('le_0xm_{}'.format(m), res[9])
@@ -212,7 +212,7 @@ def main_loop():
                             res = __FIF.change_addr_LE_0xM(int(addr), int(new_addr))
                             USB0.send('METER ADDR CHANGED: {}\r\n'.format(res))
                         except Exception as e:
-                             USB0.send('FATAL ERROR ++METACH: {}\r\n'.format(e))
+                            USB0.send('FATAL ERROR ++METACH: {}\r\n'.format(e))
                             
                         USB0.send('++METACH OK\r\n')
                         in_ = ''
@@ -242,6 +242,26 @@ def main_loop():
                         start_wdg = time.time()
                         continue
                     
+                    if (in_.find('AT++METERF=') != -1):
+                        # command sets meters to read out
+                        
+                        x = in_.find('=')
+                        y = in_.find('\r')
+                        z = ''
+                        for ch in in_[x+1:y]:
+                            z += ch
+                        
+                        CONFIG.set('METERF',z)
+                        CONFIG.write()
+                        CONF_METERF = CONFIG.get('METERF').split(',')
+                        USB0.send('METERF -> {}\r\n'.format(CONF_METERF))                   
+                        USB0.send('++METERF OK\r\n')
+                        in_ = ''
+                        start_read = time.time()
+                        __STM.reset_wdg()
+                        start_wdg = time.time()
+                        continue
+                    
                     if (in_.find('AT++METTEST=') != -1):
                         # command tests the meter read out
                         
@@ -249,7 +269,7 @@ def main_loop():
                         y = in_.find('\r')
                         addr = int(in_[x+1:y])
                         
-                        res = __FIF.read_LE_0xM(int(addr))
+                        res = __FIF.read_LE_0xM(int(addr), int(CONF_METERF[addr-1]))
                     
                         if res[0] != 0:
                             USB0.send('Meter with {} address read out correctly\r\n'.format(res))
@@ -292,7 +312,7 @@ def main_loop():
             
                     if (in_.find('AT++MQTT=CONNECT') != -1):
                         utils.mqtt_connect(log=True)
-                        USB0.send('++STM OK\r\n')
+                        USB0.send('++STM OK\r\n') # TODO to change for ++MQTT OK
                         in_ = ''
                         start_read = time.time()
                         __STM.reset_wdg()
@@ -369,5 +389,11 @@ if __name__ == '__main__':
     
     modem_init()
     main_loop()
-    
-    
+
+
+        
+
+        
+        
+        
+        

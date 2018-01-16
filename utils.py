@@ -282,6 +282,7 @@ def get_TIME():
             return (-1,)
     except Exception as e:
         USB0.send('FATAL ERROR: utils.get_TIME(): {}\r\n'.format(e))
+       
         
 def get_CSQ():
     try:
@@ -296,6 +297,7 @@ def get_CSQ():
             return (-1,)
     except Exception as e:
         USB0.send('FATAL ERROR: utils.get_CSQ(): {}\r\n'.format(e))
+        
         
 def set_PORTCFG(val1):
     try:
@@ -318,6 +320,4 @@ def set_STARTMODESCR(val1, val2):
             return (-1, s)
     except Exception as e:
         USB0.send('FATAL ERROR: utils.set_STARTMODESCR(): {}\r\n'.format(e))
-        
-        
         
