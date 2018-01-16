@@ -1,5 +1,17 @@
 <h1>Changelog<h1>
 
+<h3>0.0.3 - 2018-01-16<h3>
+<h5>Added</h5>
+<list>
+<li>AT++METERF command</li>
+<li></li>
+<list>
+<h5>Issues</h5>
+<list>
+<li>SW crashes when connecting modem to USB interface</li>
+<li>STM32 communication. Retries needed because commands don't always work correctly - sometimes LED are not setting up</li>
+<list>
+
 <h3>0.0.2 - 2018-01-07<h3>
 <h5>Added</h5>
 <list>
@@ -30,3 +42,5 @@
 <list>
 <li>SW crashes when connecting modem to USB interface</li>
 <list>
+  
+
