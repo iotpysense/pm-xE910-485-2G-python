@@ -15,6 +15,8 @@ Changes meter modbus address at 'x' address for 'y' address. For example AT++MET
 Sets meters address for readings. For example AT++METTR=1,2,3,4,5 will set up readings from 1,2,3,4,5 modbus addresses.
 - <strong>AT++METTEST=x</strong>
 Tests meters connection and read out. For example AT++METTEST=1 will test meter with address 1.
+- <strong>AT++METERF=x,y,z,k,l</strong>
+Sets phase number for the meter. For example AT++METTEST=3,1,3,1,1 will set that 1st and 3rd meter are 3-phase and the rest is 1-phase. It's mandatory for correct power consumption calculation.
 - <strong>AT++READTM=x</strong>
 Rets reading timeout. For example AT++READTM=300 will set up readings period for 300s (15min).
 - <strong>AT++MQTT=CONNECT</strong>
