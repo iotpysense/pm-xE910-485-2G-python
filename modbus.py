@@ -95,7 +95,7 @@ def read_hold_regs(addr, start, quantity):
         var.append('00'+hex(start)[2:])
         var.append('00'+hex(quantity)[2:])
     else:
-        var.append('00'+hex(start)[2:]) # TODO sprawdzic dlaczego dodawane sa zera dla warosci od 256. Czy adres moze miec wieksza wartosc?
+        var.append('00'+hex(start)[2:])
         var.append('00'+hex(quantity)[2:])
 
     i = 0
